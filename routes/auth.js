@@ -126,4 +126,24 @@ router.post("/getuser", fetchUser, async (req, res) => {
   }
 });
 
+// Route to delete a user account: DELETE "/api/auth/deleteuser"
+router.delete("/deleteuser", fetchUser, async (req, res) => {
+  try {
+    // Get user ID from token
+    const userId = req.user.id;
+
+    // Find and delete user
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+
+    res.json({ success: true, message: "User deleted successfully" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal server error occurred");
+  }
+});
+
 module.exports = router;
